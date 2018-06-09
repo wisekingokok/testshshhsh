@@ -1,0 +1,10 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <item type="id" name="view_tracker" />
+    <item type="id" name="tag_tracker_view" />
+
+    <item name="seek_bar_relative_layout_seek_bar" type="id"/>
+    <item name="seek_bar_relative_layout_text_view" type="id"/>
+    <item name="seek_bar_relative_layout_describe" type="id"/>
+    <item name="seek_bar" type="id"/>
+</resources>

@@ -1,0 +1,32 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:orientation="vertical">
+    <TextView
+        android:textSize="17sp"
+        android:textColor="@color/white"
+        android:text="标题"
+        android:gravity="center"
+        android:layout_width="match_parent"
+        android:background="#7CB0FF"
+        android:layout_height="50dp" />
+
+    <android.support.v7.widget.RecyclerView
+        android:id="@+id/list"
+        android:background="@drawable/shape_white"
+        android:divider="#DDDEDE"
+        android:dividerHeight="2dp"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content">
+    </android.support.v7.widget.RecyclerView>
+
+    <ProgressBar
+        android:id="@+id/progress_center"
+        style="?android:attr/progressBarStyleSmall"
+        android:indeterminateTint="@color/tv_remenber"
+        android:layout_gravity="center_horizontal"
+        android:layout_marginTop="200dp"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content" />
+</LinearLayout>

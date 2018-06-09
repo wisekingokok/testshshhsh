@@ -1,0 +1,64 @@
+<?xml version="1.0" encoding="utf-8"?>
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:orientation="vertical"
+    android:layout_height="match_parent"
+    android:layout_width="match_parent">
+    <TextView
+        android:textSize="17sp"
+        android:textColor="@color/white"
+        android:text="标题"
+        android:gravity="center"
+        android:id="@+id/title"
+        android:layout_alignParentTop="true"
+        android:layout_width="match_parent"
+        android:background="#7CB0FF"
+        android:layout_height="50dp" />
+    <com.sherman.getwords.view.ScanView
+        android:id="@+id/scanview"
+        android:layout_above="@+id/rl_btn"
+        android:layout_below="@+id/title"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent" />
+    <RelativeLayout
+        android:id="@+id/rl_btn"
+        android:background="@color/grey_200"
+        android:layout_width="match_parent"
+        android:layout_alignParentBottom="true"
+        android:layout_height="50dp">
+
+
+        <Button
+            android:id="@+id/btn_tips"
+            android:layout_alignParentRight="true"
+            android:background="@color/tv_remenber"
+            android:layout_width="100dp"
+            android:text="生词提示"
+            android:textSize="16sp"
+            android:textColor="@color/white"
+            android:layout_height="match_parent" />
+        <ProgressBar
+            android:layout_below="@+id/tv_mark"
+            android:layout_width="150dp"
+            android:layout_height="20dp"
+            android:layout_marginLeft="10dp"
+            android:layout_marginRight="10dp"
+            android:layout_centerVertical="true"
+            android:layout_alignParentLeft="true"
+            android:layout_alignLeft="@+id/btn_tips"
+            style="?android:attr/progressBarStyleHorizontal"
+            android:id="@+id/mark_progressBar"
+            android:max="100"
+            android:progress="0"
+
+            android:progressDrawable="@drawable/mark_progressbar"/>
+        <TextView
+            android:text="100%"
+            android:layout_marginLeft="10dp"
+            android:textSize="15sp"
+            android:layout_centerVertical="true"
+            android:textColor="@color/amber"
+            android:layout_toRightOf="@+id/mark_progressBar"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content" />
+    </RelativeLayout>
+</RelativeLayout>

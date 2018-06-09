@@ -1,0 +1,29 @@
+<resources>
+    <string name="app_name">尬词典</string>
+
+    <string name="drawer_layout_open">Open</string>
+    <string name="drawer_layout_close">Close</string>
+    <string name="blog_site">Blog:http://blog.csdn.net/student9128</string>
+    <string name="nick_name">Kevin</string>
+    <string name="tips">Hello</string>
+    <string name="navigation_navigation_bar">NavigationBar</string>
+    <string name="navigation_radio_bar">RadioGroup</string>
+    <string name="navigation_tab_layout">TabLayout + ViewPager</string>
+    <string name="navigation_tab_layout2">TabLayout + ViewPager 2</string>
+    <string name="navigation_text_tab">TextView + LinearLayout</string>
+    <string name="navigation_tab_host">TabHost</string>
+
+    <string name="item_home_read">阅读</string>
+    <string name="item_home_remember">记忆</string>
+    <string name="item_home_dictionary">尬词典</string>
+    <string name="item_home_check">复习</string>
+    <string name="item_person">我的</string>
+    <string name="login_user_hint">请输入手机号</string>
+    <string name="toast_hint_pwd">请输入密码</string>
+    <string name="get_mail_code_word">获取短信验证码</string>
+    <string name="bind_auth_code_user_hint">请输入短信验证码</string>
+
+
+    <string name="code_second">重新发送(%1$ss)</string>
+    <string name="code_second_repeat">重新发送</string>
+</resources>
