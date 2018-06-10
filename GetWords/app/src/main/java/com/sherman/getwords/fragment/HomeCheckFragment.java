@@ -9,14 +9,18 @@ import android.support.v4.app.Fragment;
 import android.text.TextUtils;
 import android.util.Log;
 import android.view.LayoutInflater;
+import android.view.MotionEvent;
+import android.view.SurfaceView;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.FrameLayout;
 import android.widget.ImageView;
 import android.widget.ProgressBar;
+import android.widget.RelativeLayout;
 import android.widget.TextView;
 import android.widget.Toast;
 
+import com.alivc.player.AliVcMediaPlayer;
 import com.lzy.okgo.OkGo;
 import com.sherman.getwords.R;
 import com.sherman.getwords.bean.JsonCallback;
@@ -37,6 +41,7 @@ import com.sherman.getwords.videomanage.ui.MediaPlayerWrapper;
 import com.sherman.getwords.videomanage.ui.VideoPlayerView;
 import com.sherman.getwords.view.CardGroupView;
 
+import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
 import java.util.Random;
@@ -55,6 +60,15 @@ public class HomeCheckFragment extends Fragment implements RoundSpinView.onRound
 
     List<WordBean> datas;
     int index;
+
+    private RelativeLayout card;
+    private TextView cardTitle;
+    private TextView card_soundMark;
+    private SurfaceView surface;
+    private ImageView video_player_mask;
+    private TextView cardInfo;
+    private AliVcMediaPlayer player;
+    private boolean playing;
 
     private static FrameLayout mVideoFloatContainer;
     private static View mVideoPlayerBg;
@@ -82,6 +96,8 @@ public class HomeCheckFragment extends Fragment implements RoundSpinView.onRound
 
     private static float mMoveDeltaY;
 
+    private ArrayList<Integer> mskImages = new ArrayList<>();
+
     String[] strings1 = new String[]{"今天","随数","两种","博原","技术","使用","机会","了。","间数","户有"};
     String[] strings2 = new String[]{"瞥气","三月","三寒","丰登","淋漓","可耐","逼人","空。","气爽","累累"};
     String[] strings3 = new String[]{"飞舞","冰封","成冰","口呆","眼快","昂胸","摩踵","舌。","愁脸","指脚"};
@@ -106,6 +122,50 @@ public class HomeCheckFragment extends Fragment implements RoundSpinView.onRound
         mCardGroupView = view.findViewById(R.id.card);
 
         roundSpinView.setOnRoundSpinViewListener(this);
+
+        mskImages.add(R.drawable.msk_zero);
+        mskImages.add(R.drawable.msk_one);
+        mskImages.add(R.drawable.msk_two);
+        mskImages.add(R.drawable.msk_three);
+        mskImages.add(R.drawable.msk_four);
+        mskImages.add(R.drawable.msk_five);
+        mskImages.add(R.drawable.msk_six);
+        mskImages.add(R.drawable.msk_seven);
+        mskImages.add(R.drawable.msk_eight);
+        mskImages.add(R.drawable.msk_nine);
+        mskImages.add(R.drawable.msk_one_zero);
+        mskImages.add(R.drawable.msk_one_one);
+        mskImages.add(R.drawable.msk_one_two);
+        mskImages.add(R.drawable.msk_one_three);
+        mskImages.add(R.drawable.msk_one_four);
+        mskImages.add(R.drawable.msk_one_five);
+        mskImages.add(R.drawable.msk_one_six);
+        mskImages.add(R.drawable.msk_one_seven);
+        mskImages.add(R.drawable.msk_one_eight);
+        mskImages.add(R.drawable.msk_one_nine);
+        mskImages.add(R.drawable.msk_two_zero);
+        mskImages.add(R.drawable.msk_two_one);
+        mskImages.add(R.drawable.msk_two_two);
+        mskImages.add(R.drawable.msk_two_three);
+        mskImages.add(R.drawable.msk_two_four);
+        mskImages.add(R.drawable.msk_two_five);
+        mskImages.add(R.drawable.msk_two_six);
+        mskImages.add(R.drawable.msk_two_seven);
+        mskImages.add(R.drawable.msk_two_eight);
+
+        card = (RelativeLayout) view.findViewById(R.id.relative_card);
+        cardTitle = (TextView) view.findViewById(R.id.card_title);
+        card_soundMark = (TextView) view.findViewById(R.id.card_soundMark);
+        surface = (SurfaceView) view.findViewById(R.id.surface);
+        video_player_mask = (ImageView) view.findViewById(R.id.video_player_mask);
+        cardInfo = (TextView) view.findViewById(R.id.card_info);
+
+        card.setOnTouchListener(new View.OnTouchListener() {
+            @Override
+            public boolean onTouch(View v, MotionEvent event) {
+                return true;
+            }
+        });
 
         sharedPreferencesHelper = new SharedPreferencesHelper(getActivity().getApplication());
         //本地数据库是否有单词库
@@ -180,9 +240,41 @@ public class HomeCheckFragment extends Fragment implements RoundSpinView.onRound
                 roundSpinView.invalidate();
             }
         }else {
-            //弹出提示
-            mCardGroupView.setVisibility(View.VISIBLE);
-            mCardGroupView.addView(getCard(datas.get(index).getWord(),datas.get(index).getSoundMark(),datas.get(index).getMeaning(),datas.get(index).getVideoUrl()));
+//            //弹出提示
+//            mCardGroupView.setVisibility(View.VISIBLE);
+            showCard(datas.get(index).getWord(),datas.get(index).getSoundMark(),datas.get(index).getMeaning(),datas.get(index).getVideoUrl());
+        }
+    }
+
+    private void showCard(String title, String soundMark, String info, String videoUrl) {
+        cardTitle.setText(title);
+        card_soundMark.setText(soundMark);
+        cardInfo.setText(info);
+
+        card.setVisibility(View.VISIBLE);
+
+        playing = true;
+
+        if(TextUtils.isEmpty(videoUrl)){
+            Random random = new Random();
+            int index = random.nextInt(mskImages.size() + 1);
+            video_player_mask.setImageResource(mskImages.get(index));
+        }else {
+            //创建播放器的实例
+            player = new AliVcMediaPlayer(getContext(), surface);
+            player.setErrorListener(new com.alivc.player.MediaPlayer.MediaPlayerErrorListener() {
+                @Override
+                public void onError(int i, String msg) {
+                    surface.setVisibility(View.INVISIBLE);
+                    playing = false;
+                    Toast.makeText(getActivity(), "该视频已损坏", Toast.LENGTH_SHORT).show();
+                }
+            });
+
+            if (player != null) {
+                player.prepareAndPlay(videoUrl);
+                player.setCirclePlay(true);
+            }
         }
     }
 
@@ -491,5 +583,12 @@ public class HomeCheckFragment extends Fragment implements RoundSpinView.onRound
         if (addTask != null && !addTask.isCancelled()) {
             addTask.cancel();
         }
+    }
+
+    //linyanjun
+    public void dissmissCard(){
+        player.stop();
+        playing = false;
+        card.setVisibility(View.INVISIBLE);
     }
 }

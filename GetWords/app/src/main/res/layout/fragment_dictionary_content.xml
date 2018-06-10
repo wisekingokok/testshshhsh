@@ -50,7 +50,6 @@
         <SurfaceView android:id="@+id/surface"
             android:layout_width="match_parent"
             android:layout_height="match_parent"
-            android:background="#88222222"
             android:layout_alignParentBottom="true"
             android:visibility="invisible"></SurfaceView>
     </RelativeLayout>

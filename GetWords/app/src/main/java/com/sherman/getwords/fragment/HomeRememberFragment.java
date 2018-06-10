@@ -10,13 +10,18 @@ import android.support.v7.widget.RecyclerView;
 import android.text.TextUtils;
 import android.util.Log;
 import android.view.LayoutInflater;
+import android.view.MotionEvent;
+import android.view.SurfaceView;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.FrameLayout;
 import android.widget.ImageView;
 import android.widget.ProgressBar;
+import android.widget.RelativeLayout;
 import android.widget.TextView;
+import android.widget.Toast;
 
+import com.alivc.player.AliVcMediaPlayer;
 import com.lin.cardlib.CardLayoutManager;
 import com.lin.cardlib.CardSetting;
 import com.lin.cardlib.CardTouchHelperCallback;
@@ -45,6 +50,7 @@ import com.sherman.getwords.view.CardGroupView;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
+import java.util.Random;
 
 import io.realm.Realm;
 import io.realm.RealmAsyncTask;
@@ -64,6 +70,15 @@ public class HomeRememberFragment extends Fragment{
     private static VideoPlayerView mVideoPlayerView;
     private static View mVideoLoadingView;
     private static ProgressBar mVideoProgressBar;
+
+    private RelativeLayout card;
+    private TextView cardTitle;
+    private TextView card_soundMark;
+    private SurfaceView surface;
+    private ImageView video_player_mask;
+    private TextView cardInfo;
+    private AliVcMediaPlayer player;
+    private boolean playing;
 
     private ProgressBar progress_center;
 
@@ -86,6 +101,8 @@ public class HomeRememberFragment extends Fragment{
 
     private List<WordBean> wordBeanList;
 
+    private ArrayList<Integer> mskImages = new ArrayList<>();
+
     public static HomeRememberFragment newInstance(String s){
         HomeRememberFragment homeFragment = new HomeRememberFragment();
         Bundle bundle = new Bundle();
@@ -104,6 +121,51 @@ public class HomeRememberFragment extends Fragment{
 
         mCardGroupView = (CardGroupView) view.findViewById(R.id.card);
         mCardGroupView.setLoadSize(1);
+
+        mskImages.add(R.drawable.msk_zero);
+        mskImages.add(R.drawable.msk_one);
+        mskImages.add(R.drawable.msk_two);
+        mskImages.add(R.drawable.msk_three);
+        mskImages.add(R.drawable.msk_four);
+        mskImages.add(R.drawable.msk_five);
+        mskImages.add(R.drawable.msk_six);
+        mskImages.add(R.drawable.msk_seven);
+        mskImages.add(R.drawable.msk_eight);
+        mskImages.add(R.drawable.msk_nine);
+        mskImages.add(R.drawable.msk_one_zero);
+        mskImages.add(R.drawable.msk_one_one);
+        mskImages.add(R.drawable.msk_one_two);
+        mskImages.add(R.drawable.msk_one_three);
+        mskImages.add(R.drawable.msk_one_four);
+        mskImages.add(R.drawable.msk_one_five);
+        mskImages.add(R.drawable.msk_one_six);
+        mskImages.add(R.drawable.msk_one_seven);
+        mskImages.add(R.drawable.msk_one_eight);
+        mskImages.add(R.drawable.msk_one_nine);
+        mskImages.add(R.drawable.msk_two_zero);
+        mskImages.add(R.drawable.msk_two_one);
+        mskImages.add(R.drawable.msk_two_two);
+        mskImages.add(R.drawable.msk_two_three);
+        mskImages.add(R.drawable.msk_two_four);
+        mskImages.add(R.drawable.msk_two_five);
+        mskImages.add(R.drawable.msk_two_six);
+        mskImages.add(R.drawable.msk_two_seven);
+        mskImages.add(R.drawable.msk_two_eight);
+
+
+        card = (RelativeLayout) view.findViewById(R.id.relative_card);
+        cardTitle = (TextView) view.findViewById(R.id.card_title);
+        card_soundMark = (TextView) view.findViewById(R.id.card_soundMark);
+        surface = (SurfaceView) view.findViewById(R.id.surface);
+        video_player_mask = (ImageView) view.findViewById(R.id.video_player_mask);
+        cardInfo = (TextView) view.findViewById(R.id.card_info);
+
+        card.setOnTouchListener(new View.OnTouchListener() {
+            @Override
+            public boolean onTouch(View v, MotionEvent event) {
+                return true;
+            }
+        });
 
         wordBeanList = new ArrayList<>();
         initEvent();
@@ -162,9 +224,42 @@ public class HomeRememberFragment extends Fragment{
         stopPlaybackImmediately();
     }
 
-    private void addCard(String title, String soundMark, String info, String videoUrl) {
-        mCardGroupView.addView(getCard(title,soundMark,info,videoUrl));
+//    private void addCard(String title, String soundMark, String info, String videoUrl) {
+//        mCardGroupView.addView(getCard(title,soundMark,info,videoUrl));
+//    }
+
+    private void showCard(String title, String soundMark, String info, String videoUrl) {
+        cardTitle.setText(title);
+        card_soundMark.setText(soundMark);
+        cardInfo.setText(info);
+
+        card.setVisibility(View.VISIBLE);
+
+        playing = true;
+
+        if(TextUtils.isEmpty(videoUrl)){
+            Random random = new Random();
+            int index = random.nextInt(mskImages.size() + 1);
+            video_player_mask.setImageResource(mskImages.get(index));
+        }else {
+            //创建播放器的实例
+            player = new AliVcMediaPlayer(getContext(), surface);
+            player.setErrorListener(new com.alivc.player.MediaPlayer.MediaPlayerErrorListener() {
+                @Override
+                public void onError(int i, String msg) {
+                    surface.setVisibility(View.INVISIBLE);
+                    playing = false;
+                    Toast.makeText(getActivity(), "该视频已损坏", Toast.LENGTH_SHORT).show();
+                }
+            });
+
+            if (player != null) {
+                player.prepareAndPlay(videoUrl);
+                player.setCirclePlay(true);
+            }
+        }
     }
+
 
     private View getCard(String title,String soundMark,String info,String videoUrl) {
         View card = LayoutInflater.from(getContext()).inflate(R.layout.layout_item_video_txt, null);
@@ -360,18 +455,18 @@ public class HomeRememberFragment extends Fragment{
                         break;
                     case ReItemTouchHelper.LEFT:
 //                        Toast.makeText(getActivity(), "swipe left out", Toast.LENGTH_SHORT).show();
-                        //记录次数
-                        remenberNum(cardBean.getWord());
 
-                        break;
-                    case ReItemTouchHelper.RIGHT:
 //                        Toast.makeText(getActivity(), "swipe right out", Toast.LENGTH_SHORT).show();
 //                        Intent intent = new Intent(getActivity(), ActivityDialog.class);
 //                        intent.putExtra("url",o.getVideoUrl());
 //                        startActivity(intent);
-                        if (!TextUtils.isEmpty(cardBean.getVideoUrl())){
-                            addCard(cardBean.getWord(),cardBean.getSoundMark(),cardBean.getMeaning(),cardBean.getVideoUrl());
-                        }
+//                        if (!TextUtils.isEmpty(cardBean.getVideoUrl())){
+                            showCard(cardBean.getWord(),cardBean.getSoundMark(),cardBean.getMeaning(),cardBean.getVideoUrl());
+//                        }
+                        break;
+                    case ReItemTouchHelper.RIGHT:
+//记录次数
+                        remenberNum(cardBean.getWord());
                         break;
                 }
             }
@@ -551,5 +646,12 @@ public class HomeRememberFragment extends Fragment{
         if (addTask != null && !addTask.isCancelled()) {
             addTask.cancel();
         }
+    }
+
+    //linyanjun
+    public void dissmissCard(){
+        player.stop();
+        playing = false;
+        card.setVisibility(View.INVISIBLE);
     }
 }
