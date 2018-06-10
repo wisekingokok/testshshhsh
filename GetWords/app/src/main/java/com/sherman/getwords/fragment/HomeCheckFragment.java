@@ -265,7 +265,7 @@ public class HomeCheckFragment extends Fragment implements RoundSpinView.onRound
             player.setErrorListener(new com.alivc.player.MediaPlayer.MediaPlayerErrorListener() {
                 @Override
                 public void onError(int i, String msg) {
-                    surface.setVisibility(View.INVISIBLE);
+                    card.setVisibility(View.INVISIBLE);
                     playing = false;
                     Toast.makeText(getActivity(), "该视频已损坏", Toast.LENGTH_SHORT).show();
                 }
