@@ -514,6 +514,14 @@ public class HomeDictionaryFragment extends Fragment implements View.OnClickList
 
             //创建播放器的实例
             player = new AliVcMediaPlayer(getContext(), surfaceView);
+            player.setErrorListener(new MediaPlayer.MediaPlayerErrorListener() {
+                @Override
+                public void onError(int i, String msg) {
+                    surfaceView.setVisibility(View.INVISIBLE);
+                    playing = false;
+                    Toast.makeText(getActivity(), "该视频已损坏", Toast.LENGTH_SHORT).show();
+                }
+            });
 
             if (player != null) {
                 player.prepareAndPlay(model.getVideoUrl());
@@ -538,14 +546,7 @@ public class HomeDictionaryFragment extends Fragment implements View.OnClickList
 //                    //首帧显示时触发
 //                }
 //            });
-            player.setErrorListener(new MediaPlayer.MediaPlayerErrorListener() {
-                @Override
-                public void onError(int i, String msg) {
-                    surfaceView.setVisibility(View.INVISIBLE);
-                    playing = false;
-                    Toast.makeText(getActivity(), "该视频已损坏", Toast.LENGTH_SHORT).show();
-                }
-            });
+
 //            mPlayer.setCompletedListener(new MediaPlayer.MediaPlayerCompletedListener() {
 //                @Override
 //                public void onCompleted() {
