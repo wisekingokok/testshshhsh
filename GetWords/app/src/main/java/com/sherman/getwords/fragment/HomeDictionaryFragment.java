@@ -1,7 +1,6 @@
 package com.sherman.getwords.fragment;
 
 import android.annotation.TargetApi;
-import android.content.Intent;
 import android.graphics.Bitmap;
 import android.media.MediaMetadataRetriever;
 import android.media.ThumbnailUtils;
@@ -14,17 +13,20 @@ import android.support.v7.widget.GridLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.text.TextUtils;
 import android.view.LayoutInflater;
+import android.view.SurfaceView;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ImageView;
 import android.widget.ProgressBar;
 import android.widget.TextView;
+import android.widget.Toast;
 
+import com.alivc.player.AliVcMediaPlayer;
+import com.alivc.player.MediaPlayer;
 import com.lzy.okgo.OkGo;
 import com.scwang.smartrefresh.layout.api.RefreshLayout;
 import com.scwang.smartrefresh.layout.listener.OnLoadMoreListener;
 import com.sherman.getwords.R;
-import com.sherman.getwords.activity.VideoActivity;
 import com.sherman.getwords.bean.JsonCallback;
 import com.sherman.getwords.bean.UrlBean;
 import com.sherman.getwords.bean.VideoBean;
@@ -55,6 +57,11 @@ public class HomeDictionaryFragment extends Fragment implements View.OnClickList
     private RecyclerView mRecyclerView;
     private RecyclerAdapter recyclerAdapter;
     private GridLayoutManager mLayoutManager;
+
+    private AliVcMediaPlayer player;
+    private boolean playing;
+
+    private SurfaceView surfaceView;
 
     private ProgressBar progress_center;
 
@@ -113,6 +120,9 @@ public class HomeDictionaryFragment extends Fragment implements View.OnClickList
 //        mVideoLoadingView = view.findViewById(R.id.video_progress_loading);
 //        mVideoProgressBar = view.findViewById(R.id.video_progress_bar);
 
+        surfaceView = (SurfaceView) view.findViewById(R.id.surface);
+
+
         refreshLayout = (RefreshLayout)view.findViewById(R.id.refreshLayout);
         mRecyclerView = view.findViewById(R.id.recycler_view);
         mRecyclerView.setHasFixedSize(true);
@@ -120,6 +130,7 @@ public class HomeDictionaryFragment extends Fragment implements View.OnClickList
         mRecyclerView.setLayoutManager(mLayoutManager);
 //        mRecyclerView.addOnScrollListener(mOnScrollListener);
         mRecyclerView.addItemDecoration(new MarginDecoration(getContext()));
+
 
         progress_center = view.findViewById(R.id.progress_center);
 
@@ -486,14 +497,87 @@ public class HomeDictionaryFragment extends Fragment implements View.OnClickList
     @Override
     public void onClick(View v) {
         if (v.getId() == R.id.layout_play_area) {
+
             VideoBean model = (VideoBean) v.getTag();
             if (TextUtils.isEmpty(model.getVideoUrl())){
                 return;
             }
 
-            Intent intent = new Intent(getActivity(), VideoActivity.class);
-            intent.putExtra("videoBean", model);
-            startActivity(intent);
+//TODO
+//            Intent intent = new Intent(getActivity(), VideoActivity.class);
+//            intent.putExtra("videoBean", model);
+//            startActivity(intent);
+
+            surfaceView.setVisibility(View.VISIBLE);
+
+            playing = true;
+
+            //创建播放器的实例
+            player = new AliVcMediaPlayer(getContext(), surfaceView);
+
+            if (player != null) {
+                player.prepareAndPlay(model.getVideoUrl());
+                player.setCirclePlay(true);
+            }
+
+//            mPlayer.setPreparedListener(new MediaPlayer.MediaPlayerPreparedListener() {
+//                @Override
+//                public void onPrepared() {
+//                    //准备完成时触发
+//                }
+//            });
+//            mPlayer.setPcmDataListener(new MediaPlayer.MediaPlayerPcmDataListener() {
+//                @Override
+//                public void onPcmData(byte[] bytes, int i) {
+//                    //音频数据回调接口，在需要处理音频时使用，如拿到视频音频，然后绘制音柱。
+//                }
+//            });
+//            mPlayer.setFrameInfoListener(new MediaPlayer.MediaFrameInfoListener() {
+//                @Override
+//                public void onFrameInfoListener() {
+//                    //首帧显示时触发
+//                }
+//            });
+            player.setErrorListener(new MediaPlayer.MediaPlayerErrorListener() {
+                @Override
+                public void onError(int i, String msg) {
+                    surfaceView.setVisibility(View.INVISIBLE);
+                    playing = false;
+                    Toast.makeText(getActivity(), "该视频已损坏", Toast.LENGTH_SHORT).show();
+                }
+            });
+//            mPlayer.setCompletedListener(new MediaPlayer.MediaPlayerCompletedListener() {
+//                @Override
+//                public void onCompleted() {
+//                    //视频正常播放完成时触发
+//                }
+//            });
+//            mPlayer.setSeekCompleteListener(new MediaPlayer.MediaPlayerSeekCompleteListener() {
+//                @Override
+//                public void onSeekCompleted() {
+//                    //视频seek完成时触发
+//                }
+//            });
+//            mPlayer.setStopedListener(new MediaPlayer.MediaPlayerStopedListener() {
+//                @Override
+//                public void onStopped() {
+//                    //使用stop接口时触发
+//                }
+//            });
+//            mPlayer.setBufferingUpdateListener(new MediaPlayer.MediaPlayerBufferingUpdateListener() {
+//                @Override
+//                public void onBufferingUpdateListener(int percent) {
+//                    //视频缓冲时的百分比
+//                }
+//            });
+//            mPlayer.setCircleStartListener(new MediaPlayer.MediaPlayerCircleStartListener(){
+//                @Override
+//                public void onCircleStart() {
+//                    //循环播放开始
+//                }
+//            });
+
+
 
 
 //            mIsClickToStop = true;
@@ -647,5 +731,12 @@ public class HomeDictionaryFragment extends Fragment implements View.OnClickList
     public void onDestroy() {
         super.onDestroy();
 //        stopPlaybackImmediately();
+    }
+
+    //linyanjun
+    public void stopPlay(){
+        player.stop();
+        playing = false;
+        surfaceView.setVisibility(View.INVISIBLE);
     }
 }

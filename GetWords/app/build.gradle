@@ -58,8 +58,8 @@ dependencies {
     implementation 'tv.danmaku.ijk.media:ijkplayer-java:0.7.5'
     implementation 'tv.danmaku.ijk.media:ijkplayer-armv7a:0.7.5'
 
-//    compile(name: 'AlivcReporter-1.1', ext: 'aar')
-//    compile(name: 'AlivcPlayer-3.4.3', ext: 'aar')
+    compile(name: 'AlivcReporter-1.1', ext: 'aar')
+    compile(name: 'AlivcPlayer-3.4.3', ext: 'aar')
 //    compile(name: 'AliyunVodPlayer-3.4.3', ext: 'aar')
 //    compile(name: 'AliyunVodPlayerView-3.4.3', ext: 'aar')
 

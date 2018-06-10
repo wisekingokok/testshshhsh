@@ -3,6 +3,7 @@ package com.sherman.getwords;
 import android.app.Application;
 import android.content.Context;
 
+import com.alivc.player.AliVcMediaPlayer;
 import com.lzy.okgo.OkGo;
 import com.lzy.okgo.interceptor.HttpLoggingInterceptor;
 import com.tencent.bugly.crashreport.CrashReport;
@@ -37,6 +38,8 @@ public class AppContext extends Application {
         builder.addInterceptor(loggingInterceptor);
 
         OkGo.getInstance().init(this).setOkHttpClient(builder.build());
+
+        AliVcMediaPlayer.init(getApplicationContext());
 
         CrashReport.initCrashReport(getApplicationContext(), "74e7cf4e73", false);
     }
