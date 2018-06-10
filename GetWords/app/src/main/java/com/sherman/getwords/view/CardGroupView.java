@@ -32,6 +32,7 @@ public class CardGroupView extends RelativeLayout {
     //左右滑动监听器
     private LeftOrRight mLeftOrRight;
     private double margin = 0.138;
+    private boolean isDisplay;
 
     public CardGroupView(Context context) {
         this(context, null);
@@ -54,13 +55,19 @@ public class CardGroupView extends RelativeLayout {
             this.mCardList.add(card);
         }
         LayoutParams layoutParams = new LayoutParams(LayoutParams.WRAP_CONTENT, LayoutParams.WRAP_CONTENT);
-        layoutParams.addRule(RelativeLayout.CENTER_VERTICAL);
+        layoutParams.addRule(RelativeLayout.CENTER_IN_PARENT);
         this.addView(card, 0, layoutParams);
         card.setOnTouchListener(onTouchListener);
         if (!isLoadMore) {
             this.setLayoutParams(card, mCardList.size());
         }
+        isDisplay = true;
+    }
 
+    public void dissmissShowCard(){
+        if(isDisplay){
+            this.removeViewAt(0);
+        }
     }
 
     /**
